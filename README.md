@@ -4,6 +4,14 @@ why?
 ----
 **django-decorators** were created during many projects where I found myself rewriting over and over the same code.
 
+Installation:
+--
+
+Simply use pip:
+    
+    pip install django-decorators
+
+
 List of decorators:
 --
 
