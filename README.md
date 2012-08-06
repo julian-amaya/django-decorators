@@ -6,6 +6,16 @@ why?
 
 List of decorators:
 --
+
+#### @add_http_var
+An example usage
+
+	from django_decorators.decorators import add_http_var
+	
+    @add_http_var('page')
+    def any_view(request, page):
+        return HttpResponse(page)
+        
 #### @json_response
 
 An example usage
@@ -20,14 +30,17 @@ returns a JSON string.
 
 Now, if you need a JSONP response, just add a callback GET or POST variable :)
 
-#### @add_http_var
+#### @requires_post
+
 An example usage
 
-	from django_decorators.decorators import add_http_var
+	from django_decorators.decorators import requires_post
 	
-    @add_http_var('page')
-    def any_view(request, page):
-        return HttpResponse(page)
+    @requires_post
+    def any_view(request):
+        return return HttpResponse('only works with POST')
+
+
 
 
 Copyright and Licensing

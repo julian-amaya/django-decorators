@@ -1,6 +1,29 @@
 # -*- coding: utf-8 -*-
+from django.http import HttpResponse, HttpResponseBadRequest,\
+                        HttpResponseNotAllowed
 from django.utils import simplejson
-from django.http import HttpResponse, HttpResponseBadRequest
+
+
+def add_http_var(variable_name, required=True):
+    """
+    A decorators that adds the variable 'variable_name' from GET/POST
+    If the variable is marked as required and not found on GET/POST,
+    a HttpResponseBadRequest is returned specifying which variable is
+    missing.
+    """
+    def wrap(func):
+        def decorator(request, *args, **kwargs):
+            http_var = request.REQUEST.get(variable_name, None)
+            if http_var:
+                kwargs[variable_name] = http_var
+            elif required:
+                return HttpResponseBadRequest(
+                    'Please define GET or POST variable %s' % variable_name)
+            else:
+                pass
+            return func(request, *args, **kwargs)
+        return decorator
+    return wrap
 
 
 def json_response(func):
@@ -25,22 +48,12 @@ def json_response(func):
     return decorator
 
 
-def add_http_var(variable_name, required=True):
+def requires_post(func):
     """
-    A decorators that adds the variable 'variable_name' from GET/POST
-    If the variable is marked as required and not found on GET/POST,
-    a HttpResponseBadRequest is returned specifying which variable is
-    missing.
+    Returns an HTTP 405 error if the request method isn't POST.
     """
-    def wrap(func):
-        def decorator(request, *args, **kwargs):
-            http_var = request.REQUEST.get(variable_name, None)
-            if http_var:
-                kwargs[variable_name] = http_var
-            elif required:
-                return HttpResponseBadRequest('Please define GET or POST variable %s' % variable_name)
-            else:
-                pass
+    def decorator(request, *args, **kwargs):
+        if request.method == 'POST':
             return func(request, *args, **kwargs)
-        return decorator
-    return wrap
+        return HttpResponseNotAllowed(['POST'])
+    return decorator
