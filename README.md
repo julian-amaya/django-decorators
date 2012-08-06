@@ -10,6 +10,8 @@ List of decorators:
 
 An example usage
 
+	from django_decorators.decorators import json_response
+	
     @json_response
     def any_view(request):
         return {'this will be': 'JSON'}
@@ -21,6 +23,8 @@ Now, if you need a JSONP response, just add a callback GET or POST variable :)
 #### @add_http_var
 An example usage
 
+	from django_decorators.decorators import add_http_var
+	
     @add_http_var('page')
     def any_view(request, page):
         return HttpResponse(page)
@@ -29,6 +33,6 @@ An example usage
 Copyright and Licensing
 -----------------------
 
-Copyright 2012 Julián Amaya M.<br />
+Copyright 2012 Julián Amaya M. [@julian_amaya](http://twitter.com/julian_amaya) <br />
 Licensed under the Apache License, Version 2.0<br /> 
 <http://www.apache.org/licenses/LICENSE-2.0>
