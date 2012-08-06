@@ -5,8 +5,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 
 def json_response(func):
     """
-    Use it to make a view that gives
-    as a result
+    A decorator thats takes a view response and turns it
+    into json. If a callback is added through GET or POST
+    the response is JSONP.
     """
     def decorator(request, *args, **kwargs):
         objects = func(request, *args, **kwargs)
@@ -14,24 +15,22 @@ def json_response(func):
             return objects
         try:
             data = simplejson.dumps(objects)
-            if 'callback' in request.GET:
-                data = '%s(%s);' % (request.GET['callback'], data)
+            if 'callback' in request.REQUEST:
+                # a jsonp response!
+                data = '%s(%s);' % (request.REQUEST['callback'], data)
+                return HttpResponse(data, "text/javascript")
         except:
             data = simplejson.dumps(str(objects))
-        if 'callback' in request.GET or 'callback' in request.POST:
-            #jsonp
-            return HttpResponse(data, "text/javascript")
-        else:
-            #json
-            return HttpResponse(data, "application/json")
+        return HttpResponse(data, "application/json")
     return decorator
 
 
 def add_http_var(variable_name, required=True):
     """
-    Pasa la variable a la funcion, extrayendola del POST o GET,
-    lanzando una excepcion si no existe esta y no ha sido explicitamente
-    declarado opcional en True.
+    A decorators that adds the variable 'variable_name' from GET/POST
+    If the variable is marked as required and not found on GET/POST,
+    a HttpResponseBadRequest is returned specifying which variable is
+    missing.
     """
     def wrap(func):
         def decorator(request, *args, **kwargs):
