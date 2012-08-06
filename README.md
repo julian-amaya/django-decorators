@@ -29,6 +29,6 @@ An example usage
 Copyright and Licensing
 -----------------------
 
-Copyright 2012 Julián Amaya M.
-Licensed under the Apache License, Version 2.0 
+Copyright 2012 Julián Amaya M.<br />
+Licensed under the Apache License, Version 2.0<br /> 
 <http://www.apache.org/licenses/LICENSE-2.0>
