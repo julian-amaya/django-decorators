@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseBadRequest,\
                         HttpResponseNotAllowed
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core import serializers
+from django.db.models.query import QuerySet
 
 
 def add_http_var(variable_name, required=True):
@@ -38,11 +40,18 @@ def json_response(func):
         if isinstance(objects, HttpResponse):
             return objects
         try:
-            data = simplejson.dumps(objects, cls=DjangoJSONEncoder)
-            if 'callback' in request.REQUEST:
-                # a jsonp response!
-                data = '%s(%s);' % (request.REQUEST['callback'], data)
-                return HttpResponse(data, "text/javascript")
+            if isinstance(objects, list) or isinstance(objects, dict):
+                data = simplejson.dumps(objects, cls=DjangoJSONEncoder)
+                if 'callback' in request.REQUEST:
+                    # a jsonp response!
+                    data = '%s(%s);' % (request.REQUEST['callback'], data)
+                    return HttpResponse(data, "text/javascript")
+            elif isinstance(objects, QuerySet):
+                data = serializers.serialize("json", objects)
+                if 'callback' in request.REQUEST:
+                    # a jsonp response!
+                    data = '%s(%s);' % (request.REQUEST['callback'], data)
+                    return HttpResponse(data, "text/javascript")
         except:
             data = simplejson.dumps(str(objects), cls=DjangoJSONEncoder)
         return HttpResponse(data, "application/json")
