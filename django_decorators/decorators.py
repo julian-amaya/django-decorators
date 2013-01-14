@@ -40,18 +40,14 @@ def json_response(func):
         if isinstance(objects, HttpResponse):
             return objects
         try:
-            if isinstance(objects, list) or isinstance(objects, dict):
-                data = simplejson.dumps(objects, cls=DjangoJSONEncoder)
-                if 'callback' in request.REQUEST:
-                    # a jsonp response!
-                    data = '%s(%s);' % (request.REQUEST['callback'], data)
-                    return HttpResponse(data, "text/javascript")
-            elif isinstance(objects, QuerySet):
+            if isinstance(objects, QuerySet):
                 data = serializers.serialize("json", objects)
-                if 'callback' in request.REQUEST:
-                    # a jsonp response!
-                    data = '%s(%s);' % (request.REQUEST['callback'], data)
-                    return HttpResponse(data, "text/javascript")
+            else:
+                data = simplejson.dumps(objects, cls=DjangoJSONEncoder)
+            if 'callback' in request.REQUEST:
+                # a jsonp response!
+                data = '%s(%s);' % (request.REQUEST['callback'], data)
+                return HttpResponse(data, "text/javascript")
         except:
             data = simplejson.dumps(str(objects), cls=DjangoJSONEncoder)
         return HttpResponse(data, "application/json")
