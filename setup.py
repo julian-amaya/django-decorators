@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='django-decorators',
-    version='0.1.0',
+    version='0.1.1',
     author='Julian Amaya',
     author_email='julian@monoku.com',
     packages=['django_decorators'],
