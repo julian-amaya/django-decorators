@@ -47,7 +47,7 @@ def json_response(func):
             if 'callback' in request.REQUEST:
                 # a jsonp response!
                 data = '%s(%s);' % (request.REQUEST['callback'], data)
-                return HttpResponse(data, "text/javascript")
+                return HttpResponse(data, "application/javascript")
         except:
             data = simplejson.dumps(str(objects), cls=DjangoJSONEncoder)
         return HttpResponse(data, "application/json")
