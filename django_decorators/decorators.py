@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseBadRequest,\
 try:
     from django.utils import simplejson
 except:
-    import simplejson
+    import json as simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from django.db.models.query import QuerySet
